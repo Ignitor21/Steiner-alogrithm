@@ -9,7 +9,7 @@ BENCH_DIR = HERE / "SMT-benchmarks"
 errors = 0
 with tempfile.TemporaryDirectory() as tmpd:
     for inp in sorted(glob.glob(os.path.join(BENCH_DIR, "*.json"))):
-        for mode in (""):
+        for mode in ("", "-m"):
             cmd = ["python3", os.path.join(HERE, "steiner.py")]
             if mode: cmd.append(mode)
             cmd.append(inp)

@@ -123,7 +123,51 @@ def i1s_basic(terminals):
     return points
 
 
+def i1s_batched(terminals):
+    points = list(terminals)
+    current_len = rmst_length(points)
 
+    while True:
+        candidates = hanan_grid(points)
+        if not candidates:
+            break
+
+        gains = []
+        for c in candidates:
+            new_len = rmst_length(points + [c])
+            g = current_len - new_len
+            if g > 0:
+                gains.append((g, c))
+
+        if not gains:
+            break
+
+        gains.sort(key=lambda t: -t[0])
+
+        added = []
+        used_x = set()
+        used_y = set()
+        for g, c in gains:
+            if c[0] in used_x and c[1] in used_y:
+                continue
+            added.append(c)
+            used_x.add(c[0])
+            used_y.add(c[1])
+
+        if not added:
+            break
+
+        new_points = points + added
+        new_len = rmst_length(new_points)
+        if new_len >= current_len:
+            best_c = gains[0][1]
+            points.append(best_c)
+            current_len = rmst_length(points)
+        else:
+            points = new_points
+            current_len = new_len
+
+    return points
 
 
 def cleanup_tree(points, edges, num_terminals):
